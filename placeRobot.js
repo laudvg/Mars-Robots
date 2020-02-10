@@ -6,15 +6,6 @@ var grid = splitedInput.shift().split(" ") // grid coordinates
 var gridX= parseInt(grid[0]) // grid X
 var gridY= parseInt(grid[1])  // grid Y
 
-function verifyInput(posX, posY, orientation, directions){
-  if ((posX >= 0 && posX <= 50) && ((posY >= 0 && posY <= 50) && 
-  (orientation === "N" || orientation === "S"  || orientation === "E"  || orientation === "w"))){
-    new Robot(posX, posY, orientation, directions)
-  } else {
-    throw new RangeError('The robot must be placed inside the grid')
-  }
-};
-
 class Robot {
   constructor(coordinates, directions){
     const initialPosition = coordinates.split(" ");
@@ -30,7 +21,20 @@ for (let i = 0; i < splitedInput.length; i = i + 2){
   robots.push(new Robot(splitedInput[i], splitedInput[i + 1]))
 }
 
+let drawRobot = false;
 
-module.exports ={
-  verifyInput: verifyInput,
+function verifyRobot(robots){
+  for(let i = 0; i < robots.length; i++){
+      if ((robots[i].robotX >= 0 && robots[i].robotX <= 50) && ((robots[i].robotY >= 0 && robots[i].robotY <= 50) && 
+  (robots[i].robotOrientation === "N" || robots[i].robotOrientation === "S"  || robots[i].robotOrientation === "E"  || robots[i].robotOrientation === "w"))){
+    return drawRobot = true;
+  } else {
+    return drawRobot = false;
+    throw new RangeError('The robot must be placed inside the grid')
+  }
+  }
 };
+
+// console.log(drawRobot)
+// console.log(robots)
+// console.log(verifyRobot(robots))

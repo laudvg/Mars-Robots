@@ -85,39 +85,39 @@ describe("draw grid", function(){
 })
 
 describe("place the robot in the grid", function(){
-  
+
 
   it("if the given x is bigger than 50 throw error", function(){
-    let biggerThan50 = function() { verifyInput([55, 10]); };
+    let biggerThan50 = function() { verifyRobot([55, 10]); };
     expect(biggerThan50).toThrowError(RangeError, 'The robot must be placed inside the grid');
   });
 
   it("if the given y is bigger than 50 throw error", function(){
-    let biggerThan50 = function() { verifyInput([10, 55]); };
+    let biggerThan50 = function() { verifyRobot([10, 55]); };
     expect(biggerThan50).toThrowError(RangeError, 'The robot must be placed inside the grid');
   });
 
   it("if the given x is smaller than 0 throw error", function(){
-    let smallerThan0 = function() { verifyInput([-10, 40]); };
+    let smallerThan0 = function() { verifyRobot([-10, 40]); };
     expect(smallerThan0).toThrowError(RangeError, 'The robot must be placed inside the grid');
   });
 
   it("if the given y is smaller than 0 throw error", function(){
-    let smallerThan0 = function() { verifyInput([10, -40]); };
+    let smallerThan0 = function() { verifyRobot([10, -40]); };
     expect(smallerThan0).toThrowError(RangeError, 'The robot must be placed inside the grid');
   });
 
   it("if the given coords are decimal numbers they should be rounded downward", function(){
-    let decimals = function() { verifyInput([10, 40.5]); };
+    let decimals = function() { verifyRobot([10, 40.5]); };
     expect(decimals).toEqual([5, 10])  });
 
   it("must have an orientation and must be a string", function(){
-    let orientation = function() { verifyInput(["E"]); };
+    let orientation = function() { verifyRobot(["E"]); };
     expect(orientation).toBeDefined();
   });
 
   it("if the given orientation is not === N, S, E, or W, thow error", function(){
-    let orientation = function() { verifyInput(["A"]); };
+    let orientation = function() { verifyRobot(["A"]); };
     expect(orientation).toThrowError(Error, 'The orientation must be N, S, E, or W');
   });
 
