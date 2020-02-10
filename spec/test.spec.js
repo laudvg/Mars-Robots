@@ -85,6 +85,7 @@ describe("draw grid", function(){
 })
 
 describe("place the robot in the grid", function(){
+  
 
   it("if the given x is bigger than 50 throw error", function(){
     let biggerThan50 = function() { verifyInput([55, 10]); };
@@ -111,11 +112,13 @@ describe("place the robot in the grid", function(){
     expect(decimals).toEqual([5, 10])  });
 
   it("must have an orientation and must be a string", function(){
-
+    let orientation = function() { verifyInput(["E"]); };
+    expect(orientation).toBeDefined();
   });
 
   it("if the given orientation is not === N, S, E, or W, thow error", function(){
-
+    let orientation = function() { verifyInput(["A"]); };
+    expect(orientation).toThrowError(Error, 'The orientation must be N, S, E, or W');
   });
 
 })

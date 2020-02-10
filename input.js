@@ -5,7 +5,7 @@ let gridX= parseInt(grid[0])
 let gridY= parseInt(grid[1])
 
 module.exports ={
-  input : input,
+  // input : input,
   grid: grid,
   gridX: gridX,
   gridY: gridY,
