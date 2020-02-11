@@ -1,4 +1,4 @@
-const input = require("../input")
+//const input = require("../input")
 
 var input = "5 3\n1 1 E\nRFRFRFRf\n3 2 N\nFRRFLLFFRRFLL\n0 3 W\nLLFFFLFLFL";
 var splitedInput = input.toUpperCase().split("\n"); // only robots
@@ -9,11 +9,70 @@ var gridY= parseInt(grid[1])  // grid Y
 class Robot {
   constructor(coordinates, directions){
     const initialPosition = coordinates.split(" ");
-    this.robotX = initialPosition[0];
-    this.robotY = initialPosition[1];
+    this.robotX = parseInt(initialPosition[0]);
+    this.robotY = parseInt(initialPosition[1]);
     this.robotOrientation = initialPosition[2];
     this.robotDirections = directions;
-  }
+  };
+  turnLeft = () => {
+    switch(this.robotOrientation){
+      case "N":
+        this.robotOrientation = "W";
+        break;
+      case "W":
+        this.robotOrientation = "S";
+        break;
+      case "S":
+        this.robotOrientation = "E";
+        break;
+      case "E":
+        this.robotOrientation = "N";
+        break;
+    }
+  };
+  turnRight = () => {
+    switch(this.robotOrientation){
+      case "N":
+        this.robotOrientation = "E";
+        break;
+      case "E":
+        this.robotOrientation = "S";
+        break;
+      case "S":
+        this.robotOrientation = "W";
+        break;
+      case "W":
+        this.robotOrientation = "N";
+        break;
+    }
+  };
+  moveForward = () => {
+    switch(this.robotOrientation){
+      case "N":
+        this.robotY = this.robotY + 1;
+        break;
+      case "E":
+        this.robotX += 1;
+        break;
+      case "S":
+        this.robotY -= 1;
+        break;
+      case "W":
+        this.robotX -= 1;
+        break;
+    }
+  };
+  moveRobot = () => {
+    this.robotDirections.split("").forEach(direction => {
+      if(direction === "L"){
+        this.turnLeft();   
+      } else if (direction === "R"){
+        this.turnRight();   
+      } else if (direction === "F"){
+        this.moveForward();
+      }
+    });
+  };
 }
 
 let robots = [];
@@ -35,6 +94,10 @@ function verifyRobot(robots){
   }
 };
 
+verifyRobot(robots)
+
 // console.log(drawRobot)
 // console.log(robots)
 // console.log(verifyRobot(robots))
+
+module.exports = Robot;
