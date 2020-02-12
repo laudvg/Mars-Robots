@@ -24,13 +24,13 @@ FRRFLLFFRRFLL
 
 ### How do you turn this on :oncoming_automobile:
 
-###### npm install : Install the dependencies in the local node_modules folder.
+**npm install** : Install the dependencies in the local node_modules folder.
 
-###### npm run test : To run the Jasmine tests
+**npm run test** : To run the Jasmine tests
 
-###### cat sample.txt|node index.js : To input in the console.
+**cat sample.txt|node index.js** : To input in the console.
 
-###### sh run sh + then put input in the console : Option B to input in the console.
+**sh run sh + then put input in the console** : Option B to input in the console.
 
 
 
