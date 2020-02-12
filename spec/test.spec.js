@@ -1,104 +1,80 @@
-const inputValue = require("../inputValue")
+const inputParser = require("../inputValue")
 const mars = require("../mars");
 const Grid = require("../grid");
 
-describe("input process", function(){
+describe("input processing", function(){
   const splitInputTest = function (input, expectedResult){
     expect(inputValue.splitInput(input)).toEqual(expectedResult);
   }
-
-  it ("turn string into array os strings separated by new line", function(){
-    let newInput = "5 3\n1 1 E\nRFRFRFRF\n3 2 N\nFRRFLLFFRRFLL\n0 3 W\nLLFFFLFLFL"
-    let expectedResult = ["5 3", "1 1 E", "RFRFRFRF", "3 2 N", "FRRFLLFFRRFLL", "0 3 W", "LLFFFLFLFL"]
-    splitInputTest(newInput, expectedResult)
-  });
-
-  it("turn lowercase into uppercase", function(){
-    let newInput = ("f");
-    let expectedResult = ["F"]
-    splitInputTest(newInput, expectedResult)
-  });
   
-  const getGridXYTest = function (input, expectedResult){
-    expect(inputValue.getGridXY(input)).toEqual(expectedResult);
+  const input = "5 3\n1 1 E\nRFRFRFRF\n3 2 N\nFRRFLLFFRRFLL\n0 3 W\nLLFFFLFLFL";
+  const mars = inputParser(input);
+
+  it("should return a which of the given input", function(){
+     
+    expect(mars.grid.terrain.length).toEqual(5);
+    mars.grid.terrain.forEach((row) => {
+      expect(row.length).toEqual(3);
+      row.forEach((cell) => {
+        expect(cell).toBeFalse();
+      })
+    })
+  });
+
+  const checkRobot = function(robot, x, y, orientation){
+    expect(robot.robotX).toEqual(x);
+    expect(robot.robotY).toEqual(y);
+    expect(robot.robotOrientation).toEqual(orientation);
   }
 
-  it ("must save first array as grids coords", function(){
-    let newInput = (["5 3", "1 1 E", "RFRFRFRF", "3 2 N", "FRRFLLFFRRFLL", "0 3 W", "LLFFFLFLFL"]);
-    let expectedResult= ["5", "3"];
-    getGridXYTest(newInput, expectedResult)
-  })
+  it("should give as many robots as received", function(){
+    expect(mars.robots.length).toEqual(3)
+    checkRobot(mars.robots[0], 1, 1, "E");
+    checkRobot(mars.robots[1], 3, 2, "N");
+    checkRobot(mars.robots[2], 0, 3, "W");
+  });
 
-})
+});
 
-describe("draw grid", function(){
-  
-  const verifyGrid = (coords) => {
-    new Grid(coords)
-  } 
+const verifyGrid = function (coordCheck, expected) {
+  const grid = 
+  expect(() => {
+    new Grid(coordCheck)
+  }).toThrow(expected);
+} 
+
+describe("To draw grid", function(){
 
   it("if the given x is bigger than 50 throw error", function(){
-    let biggerThan50 = function() {verifyGrid("55 10"); };
-    expect(biggerThan50).toThrowError(RangeError, 'The coordinates value must be between 0 and 50.');
+    const coordCheck = "55 3";
+    const expectedResult = new RangeError('The coordinates value must be between 0 and 50.');
+    verifyGrid(coordCheck, expectedResult)
   });
 
   it("if the given y is bigger than 50 throw error", function(){
-    let biggerThan50 = function() {verifyCoords("10 55"); };
-    expect(biggerThan50).toThrowError(RangeError, 'The coordinates value must be between 0 and 50.');
+    const coordCheck = "10 55";
+    const expectedResult = new RangeError('The coordinates value must be between 0 and 50.');
+    verifyGrid(coordCheck, expectedResult)
   });
 
   it("if the given x is smaller than 0 throw error", function(){
-    let smallerThan0 = function() {verifyCoords("-5 10"); };
-    expect(smallerThan0).toThrowError(RangeError, 'The coordinates value must be between 0 and 50.');
+    const coordCheck = "-10 5";
+    const expectedResult = new RangeError('The coordinates value must be between 0 and 50.');
+    verifyGrid(coordCheck, expectedResult)
   });
 
-  it("if the given y is smaller than 0 throw error", function(){
-    let smallerThan0 = function() {verifyCoords("5 -10"); };
-    expect(smallerThan0).toThrowError(RangeError, 'The coordinates value must be between 0 and 50.');
+  it("if the given Y is smaller than 0 throw error", function(){
+    const coordCheck ="10 -5";
+    const expectedResult = new RangeError('The coordinates value must be between 0 and 50.')
+    verifyGrid(coordCheck, expectedResult)
   });
 
   it("if the given coords are decimal numbers they should be rounded downward", function(){
-    let decimal = function() {verifyCoords("5 10.5"); };
-    expect(decimal).toEqual("5 10")
+    const coordCheck ="10.5 5";
+    const grid = new Grid(coordCheck);
+    expect(grid.X).toEqual(10);
+    expect(grid.Y).toEqual(5);
   });
 
 })
 
-fdescribe("place the robot in the grid", function(){
-
-
-  it("if the given x is bigger than 50 throw error", function(){
-    let biggerThan50 = function() { verifyRobot([55, 10]); };
-    expect(biggerThan50).toThrowError(RangeError, 'The robot must be placed inside the grid');
-  });
-
-  it("if the given y is bigger than 50 throw error", function(){
-    let biggerThan50 = function() { verifyRobot([10, 55]); };
-    expect(biggerThan50).toThrowError(RangeError, 'The robot must be placed inside the grid');
-  });
-
-  it("if the given x is smaller than 0 throw error", function(){
-    let smallerThan0 = function() { verifyRobot([-10, 40]); };
-    expect(smallerThan0).toThrowError(RangeError, 'The robot must be placed inside the grid');
-  });
-
-  it("if the given y is smaller than 0 throw error", function(){
-    let smallerThan0 = function() { verifyRobot([10, -40]); };
-    expect(smallerThan0).toThrowError(RangeError, 'The robot must be placed inside the grid');
-  });
-
-  it("if the given coords are decimal numbers they should be rounded downward", function(){
-    let decimals = function() { verifyRobot([10, 40.5]); };
-    expect(decimals).toEqual([5, 10])  });
-
-  it("must have an orientation and must be a string", function(){
-    let orientation = function() { verifyRobot(["E"]); };
-    expect(orientation).toBeDefined();
-  });
-
-  it("if the given orientation is not === N, S, E, or W, thow error", function(){
-    let orientation = function() { verifyRobot(["A"]); };
-    expect(orientation).toThrowError(Error, 'The orientation must be N, S, E, or W');
-  });
-
-})

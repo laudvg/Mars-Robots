@@ -1,18 +1,25 @@
-//const input = require("../input")
-
-var input = "5 3\n1 1 E\nRFRFRFRf\n3 2 N\nFRRFLLFFRRFLL\n0 3 W\nLLFFFLFLFL";
-var splitedInput = input.toUpperCase().split("\n"); // only robots
-var grid = splitedInput.shift().split(" ") // grid coordinates
-var gridX= parseInt(grid[0]) // grid X
-var gridY= parseInt(grid[1])  // grid Y
-
 class Robot {
-  constructor(coordinates, directions){
+  constructor(coordinates, directions, grid){
     const initialPosition = coordinates.split(" ");
     this.robotX = parseInt(initialPosition[0]);
     this.robotY = parseInt(initialPosition[1]);
     this.robotOrientation = initialPosition[2];
+    this.grid = grid;
+    this.lost = false;
     this.robotDirections = directions;
+    switch(this.robotOrientation){
+      case "N":
+      case "W":
+      case "S":
+      case "E":
+        break;
+      default:
+       console.error("Invalid orientation " + this.robotOrientation);
+       throw Error('The orientation must be N, S, E, or W')
+    }
+    if (this.robotX < 0 || this.robotX > grid.terrain.length || this.robotY < 0 || this.robotY > grid.terrain[0].length){
+      throw new RangeError("The robot must be placed inside the grid");
+    }
   };
   turnLeft = () => {
     switch(this.robotOrientation){
@@ -46,58 +53,70 @@ class Robot {
         break;
     }
   };
-  moveForward = () => {
+  moveForward = () => {    
+    if (this.lost){
+      return;
+    }
+    const previousPosition = {
+      x : this.robotX,
+      y : this.robotY 
+    }
+    const nextPosition = {
+      x: 0,
+      y: 0
+    }
     switch(this.robotOrientation){
       case "N":
-        this.robotY = this.robotY + 1;
+        nextPosition.y = this.robotY + 1;
+        nextPosition.x = this.robotX;
         break;
       case "E":
-        this.robotX += 1;
+        nextPosition.x = this.robotX + 1;
+        nextPosition.y = this.robotY;
         break;
       case "S":
-        this.robotY -= 1;
+        nextPosition.y = this.robotY - 1;
+        nextPosition.x = this.robotX;
         break;
       case "W":
-        this.robotX -= 1;
+        nextPosition.x = this.robotX - 1;
+        nextPosition.y = this.robotY;
         break;
     }
+    
+    if (this.isLost(nextPosition)){
+      if (!this.grid.terrain[previousPosition.x][previousPosition.y]){
+        this.grid.terrain[previousPosition.x][previousPosition.y] = true;
+        this.lost = true;
+        this.robotX = nextPosition.x;
+        this.robotY = nextPosition.y;
+      }
+    } else {  
+      this.robotX = nextPosition.x;
+      this.robotY = nextPosition.y;
+    } 
+    
   };
+  isLost = (position) => {
+    return (position.x < 0 
+      || position.y < 0 
+      || position.x >= this.grid.terrain.length
+      || position.y >= this.grid.terrain[position.x].length)
+  }
   moveRobot = () => {
+    
     this.robotDirections.split("").forEach(direction => {
       if(direction === "L"){
         this.turnLeft();   
       } else if (direction === "R"){
         this.turnRight();   
-      } else if (direction === "F"){
-        this.moveForward();
+      } else if (direction === "F") {
+           this.moveForward();
+      } else {
+        console.log("Directions must be L, R, or F")
       }
     });
   };
 }
-
-let robots = [];
-for (let i = 0; i < splitedInput.length; i = i + 2){
-  robots.push(new Robot(splitedInput[i], splitedInput[i + 1]))
-}
-
-let drawRobot = false;
-
-function verifyRobot(robots){
-  for(let i = 0; i < robots.length; i++){
-      if ((robots[i].robotX >= 0 && robots[i].robotX <= 50) && ((robots[i].robotY >= 0 && robots[i].robotY <= 50) && 
-  (robots[i].robotOrientation === "N" || robots[i].robotOrientation === "S"  || robots[i].robotOrientation === "E"  || robots[i].robotOrientation === "w"))){
-    return drawRobot = true;
-  } else {
-    return drawRobot = false;
-    throw new RangeError('The robot must be placed inside the grid')
-  }
-  }
-};
-
-verifyRobot(robots)
-
-// console.log(drawRobot)
-// console.log(robots)
-// console.log(verifyRobot(robots))
 
 module.exports = Robot;

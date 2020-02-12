@@ -1,30 +1,25 @@
-let input = "5 3\n1 1 E\nRFRFRFRF\n3 2 N\nFRRFLLFFRRFLL\n0 3 W\nLLFFFLFLFL";
- 
-let splitedInput = [];
-let grid = [];
+const Grid = require("./grid");
+const Robot = require("./placeRobot");
 
-splitInput = (input) => {
-splitedInput = input.toUpperCase().split("\n");
-return splitedInput
+const inputParser = (input) => {
+  input = input.replace(/\r/g, "");
+  if (input.endsWith("\n")){
+    input = input.substring(0, input.length - 1);
+  }
+  const inputSplitted = input.toUpperCase().split("\n");
+  const gridInput = inputSplitted.shift();
+  const grid = new Grid(gridInput);
+  
+  let robots = [];
+  for (let i = 0; i < inputSplitted.length; i = i + 2){
+    robots.push(new Robot(inputSplitted[i], inputSplitted[i + 1], grid));
+  }
+
+  return {
+    grid: grid,
+    robots: robots
+  }
+
 }
-splitInput(input);
-// console.log(splitedInput)
 
-getGridXY = (splitInput) => {
-grid = splitInput.shift().split(" ")  
-return grid
-}
-getGridXY(splitedInput);
-// console.log(grid)
-
-let gridX = parseInt(grid[0]);
-let gridY = parseInt(grid[1]);
-
-module.exports ={
-  // input : input,
-  splitInput: splitInput,
-  getGridXY: getGridXY,
-  grid: grid,
-  gridX: gridX,
-  gridY: gridY,
-} 
+module.exports = inputParser;
