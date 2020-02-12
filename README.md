@@ -20,6 +20,8 @@ Since the grid is rectangular and bounded (...yes Mars is a strange planet), a r
 RFRFRFRF
 3 2 N
 FRRFLLFFRRFLL
+3 1 N
+FFLLF
 ```
 
 ### How do you turn this on :oncoming_automobile:
